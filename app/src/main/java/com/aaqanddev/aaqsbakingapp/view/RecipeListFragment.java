@@ -2,7 +2,6 @@ package com.aaqanddev.aaqsbakingapp.view;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.OkHttpClient;
@@ -58,22 +58,29 @@ public class RecipeListFragment extends Fragment {
         //TODO getdata and pass into recipeAdapter//
         retro = RetroService.getRetroInstance(new Gson(), new OkHttpClient());
         RetroInterface retroInterface = retro.create(RetroInterface.class);
-        Call<List<Recipe>> call = retroInterface.getRecipes();
-        call.enqueue(new Callback<List<Recipe>>(){
-            @Override
-            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                int statusCode = response.code();
-                mRecipes = response.body();
-            }
+        if (mRecipes == null) {
+            Call<List<Recipe>> call = retroInterface.getRecipes();
+            call.enqueue(new Callback<List<Recipe>>() {
+                @Override
+                public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                    int statusCode = response.code();
+                    mRecipes = response.body();
+                }
 
-            @Override
-            public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                Log.e(TAG, "error fetching data " + t.getMessage());
-                t.printStackTrace();
-            }
-        });
-        mRecipeAdapter = new RecipeAdapter(mRecipes);
-        mRecipesRV.setAdapter(mRecipeAdapter);
+                @Override
+                public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                    Log.e(TAG, "error fetching data " + t.getMessage());
+                    t.printStackTrace();
+                }
+            });
+        }
+        if (mRecipes != null){
+            mRecipeAdapter = new RecipeAdapter(mRecipes);
+            mRecipesRV.setAdapter(mRecipeAdapter);
+        }
+        else {
+            Log.i(TAG, "the recipe list is null.");
+        }
         return rootView;
     }
 

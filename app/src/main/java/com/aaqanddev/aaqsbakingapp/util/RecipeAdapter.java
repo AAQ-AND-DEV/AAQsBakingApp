@@ -1,7 +1,9 @@
 package com.aaqanddev.aaqsbakingapp.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,11 +11,14 @@ import android.widget.TextView;
 
 import com.aaqanddev.aaqsbakingapp.R;
 import com.aaqanddev.aaqsbakingapp.model.Recipe;
+import com.aaqanddev.aaqsbakingapp.view.StepsListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
@@ -49,7 +54,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         return mRecipes.size();
     }
 
-    public static class RecipeViewHolder extends RecyclerView.ViewHolder {
+        public static class RecipeViewHolder extends RecyclerView.ViewHolder {
         public ImageView recipe_img;
         public TextView recipe_name;
         public TextView recipe_servings;
@@ -59,6 +64,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             recipe_name = itemView.findViewById(R.id.recipe_name);
             recipe_servings = itemView.findViewById(R.id.recipe_servings);
             recipe_img = itemView.findViewById(R.id.recipe_img);
+            recipe_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    StepsListFragment stepsFrag = new StepsListFragment();
+                    //TODO launch detailAct (or update frag for tablets)
+                    //get can get make method that accepts fragMangr?
+                    FragmentManager fragMangr = ((AppCompatActivity) view.getContext()).getSupportFragmentManager();
+                    fragMangr.beginTransaction().replace(R.id.recipes_container, stepsFrag);
+                }
+            });
         }
     }
 }

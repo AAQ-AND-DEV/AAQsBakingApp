@@ -8,11 +8,13 @@ import com.aaqanddev.aaqsbakingapp.model.Recipe;
 import com.aaqanddev.aaqsbakingapp.util.RecipeAdapter;
 import com.aaqanddev.aaqsbakingapp.util.RetroInterface;
 import com.aaqanddev.aaqsbakingapp.util.RetroService;
+import com.aaqanddev.aaqsbakingapp.view.RecipeListFragment;
 import com.google.gson.Gson;
 
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.OkHttpClient;
@@ -30,6 +32,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RecipeListFragment recipeFrag = new RecipeListFragment();
+
+        FragmentManager fragMangr = getSupportFragmentManager();
+
+        fragMangr.beginTransaction()
+                .add(R.id.recipes_container, recipeFrag)
+                .commit();
 
     }
 }
