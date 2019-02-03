@@ -3,20 +3,40 @@ package com.aaqanddev.aaqsbakingapp.view;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aaqanddev.aaqsbakingapp.R;
+import com.aaqanddev.aaqsbakingapp.model.Recipe;
+import com.aaqanddev.aaqsbakingapp.util.RecipeAdapter;
+import com.aaqanddev.aaqsbakingapp.util.RetroInterface;
+import com.aaqanddev.aaqsbakingapp.util.RetroService;
+import com.google.gson.Gson;
 
+import java.util.List;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RecipeListFragment extends Fragment {
 
+    private static final String TAG = RecipeListFragment.class.getSimpleName();
+    private RecyclerView mRecipesRV;
+    private List<Recipe> mRecipes;
+    private RecyclerView.Adapter mRecipeAdapter;
+    private RecyclerView.LayoutManager mRecipesLayoutMangr;
+    private Retrofit retro;
 
     public RecipeListFragment() {
         // Required empty public constructor
@@ -27,10 +47,34 @@ public class RecipeListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-        RecyclerView recipes_rv = rootView.findViewById(R.id.recipes_recycler_view);
+
+        mRecipesRV = rootView.findViewById(R.id.recipes_recycler_view);
         //should this actually be the frame layout root view?
         //TODO move data fetch here from MainActivity?
-        return recipes_rv;
+
+        mRecipesRV.setHasFixedSize(true);
+        mRecipesLayoutMangr = new LinearLayoutManager(this.getContext());
+        mRecipesRV.setLayoutManager(mRecipesLayoutMangr);
+        //TODO getdata and pass into recipeAdapter//
+        retro = RetroService.getRetroInstance(new Gson(), new OkHttpClient());
+        RetroInterface retroInterface = retro.create(RetroInterface.class);
+        Call<List<Recipe>> call = retroInterface.getRecipes();
+        call.enqueue(new Callback<List<Recipe>>(){
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                int statusCode = response.code();
+                mRecipes = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "error fetching data " + t.getMessage());
+                t.printStackTrace();
+            }
+        });
+        mRecipeAdapter = new RecipeAdapter(mRecipes);
+        mRecipesRV.setAdapter(mRecipeAdapter);
+        return rootView;
     }
 
 }
