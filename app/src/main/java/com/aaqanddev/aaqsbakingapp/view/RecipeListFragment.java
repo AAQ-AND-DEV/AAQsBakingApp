@@ -56,7 +56,7 @@ public class RecipeListFragment extends Fragment {
         mRecipesLayoutMangr = new LinearLayoutManager(this.getContext());
         mRecipesRV.setLayoutManager(mRecipesLayoutMangr);
         //TODO getdata and pass into recipeAdapter//
-        retro = RetroService.getRetroInstance(new Gson(), new OkHttpClient());
+        retro = RetroService.getRetroInstance(new Gson());
         RetroInterface retroInterface = retro.create(RetroInterface.class);
         if (mRecipes == null) {
             Call<List<Recipe>> call = retroInterface.getRecipes();
