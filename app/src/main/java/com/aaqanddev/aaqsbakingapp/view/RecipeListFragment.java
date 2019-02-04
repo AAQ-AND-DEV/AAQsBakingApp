@@ -49,6 +49,9 @@ public class RecipeListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            mRecipes = savedInstanceState.getParcelableArrayList(RECIPE_LIST);
+        }
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
 
         mRecipesRV = rootView.findViewById(R.id.recipes_recycler_view);
