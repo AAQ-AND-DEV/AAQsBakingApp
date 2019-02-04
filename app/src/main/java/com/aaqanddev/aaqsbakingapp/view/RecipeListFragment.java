@@ -65,6 +65,7 @@ public class RecipeListFragment extends Fragment {
                 public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                     int statusCode = response.code();
                     mRecipes = response.body();
+                    Log.d(TAG, response.body().toString() + mRecipes.get(0).getName());
                 }
 
                 @Override
