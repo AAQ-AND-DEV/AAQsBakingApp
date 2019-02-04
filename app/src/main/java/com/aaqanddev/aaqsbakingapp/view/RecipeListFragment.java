@@ -15,8 +15,10 @@ import com.aaqanddev.aaqsbakingapp.util.RetroInterface;
 import com.aaqanddev.aaqsbakingapp.util.RetroService;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +35,7 @@ public class RecipeListFragment extends Fragment {
 
     private static final String TAG = RecipeListFragment.class.getSimpleName();
     private RecyclerView mRecipesRV;
+    private static final String RECIPE_LIST = "parcelRecipeListKey";
     private List<Recipe> mRecipes;
     private RecyclerView.Adapter mRecipeAdapter;
     private RecyclerView.LayoutManager mRecipesLayoutMangr;
@@ -85,4 +88,10 @@ public class RecipeListFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        //done made the Recipes parcelable
+        outState.putParcelableArrayList(RECIPE_LIST, (ArrayList) mRecipes);
+
+    }
 }
